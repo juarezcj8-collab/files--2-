@@ -207,14 +207,12 @@ let soloLetra       = false;
 /* ================================================
    INICIALIZACIÓN
 ================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  cargarDatos();
+document.addEventListener('DOMContentLoaded', async () => {
+  await cargarDatos();
   renderizarCanciones();
   actualizarBadgeSetlist();
   inicializarFiltros();
-  importarSetlistDesdeURL(); // debe ir después de cargarDatos
 
-  // Atajos de teclado para navegación en vivo
   document.addEventListener('keydown', manejarTeclado);
 });
 
@@ -233,15 +231,25 @@ function manejarTeclado(e) {
 /* ================================================
    PERSISTENCIA
 ================================================ */
-function cargarDatos() {
-  const guardadas = localStorage.getItem('ch_canciones');
+async function cargarDatos() {
   const setlistGuardado = localStorage.getItem('ch_setlist');
-  canciones = guardadas ? JSON.parse(guardadas) : [...CANCIONES_DEFAULT];
-  if (!guardadas) guardarCanciones();
   setlist = setlistGuardado ? JSON.parse(setlistGuardado) : [];
+
+  const { data, error } = await supabaseClient
+    .from('canciones')
+    .select('*')
+    .eq('estado', 'aprobado')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error cargando canciones:', error);
+    canciones = [...CANCIONES_DEFAULT];
+    mostrarToast('No se pudieron cargar canciones');
+    return;
+  }
+
+  canciones = data || [];
 }
-function guardarCanciones() { localStorage.setItem('ch_canciones', JSON.stringify(canciones)); }
-function guardarSetlist()    { localStorage.setItem('ch_setlist',   JSON.stringify(setlist));   }
 
 /* ================================================
    NAVEGACIÓN ENTRE VISTAS
