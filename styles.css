@@ -1,0 +1,1027 @@
+/* ================================================
+   CORCHEA HOUSE – styles.css
+   Diseño: limpio, moderno, responsive.
+   Paleta: neutros cálidos + violeta pizarra como acento.
+================================================ */
+
+/* ---- VARIABLES ---- */
+:root {
+  --color-bg:        #F7F6F3;        /* fondo general, cálido casi blanco */
+  --color-surface:   #FFFFFF;        /* tarjetas y superficies */
+  --color-border:    #E4E2DC;        /* bordes sutiles */
+  --color-text:      #1C1917;        /* texto principal */
+  --color-text-muted:#78716C;        /* texto secundario */
+--color-accent:    #17223b;
+--color-accent-lt: #E2E8F0;
+  --color-danger:    #DC2626;        /* rojo para acciones destructivas */
+  --color-danger-lt: #FEE2E2;
+
+  --radius-sm:  6px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-modal: 0 8px 40px rgba(0,0,0,0.18);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+
+  --navbar-h: 60px;
+  --max-w: 900px;
+}
+
+/* ---- RESET BÁSICO ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+}
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: 1rem; }
+ul { list-style: none; }
+
+/* ================================================
+   NAVBAR
+================================================ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  height: var(--navbar-h);
+}
+.navbar-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.logo-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text);
+  transition: opacity .15s;
+}
+.logo-btn:hover { opacity: .75; }
+.logo-icon {
+  font-size: 1.4rem;
+  color: var(--color-accent);
+}
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-link {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: color .15s, background .15s;
+  position: relative;
+}
+.nav-link:hover { background: var(--color-bg); color: var(--color-text); }
+
+/* Badge del setlist */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 600;
+  border-radius: 99px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 4px;
+  vertical-align: middle;
+  transition: transform .2s;
+}
+.badge.bounce { animation: badge-bounce .25s ease; }
+@keyframes badge-bounce {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+/* ================================================
+   BOTONES GLOBALES
+================================================ */
+.btn-primary {
+  background: var(--color-accent);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: .9rem;
+  transition: background .15s, transform .1s;
+}
+.btn-primary:hover { background: #4840b0; }
+.btn-primary:active { transform: scale(.97); }
+
+.btn-secondary {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: .9rem;
+  transition: background .15s;
+}
+.btn-secondary:hover { background: var(--color-border); }
+
+.btn-share {
+  background: var(--color-accent-lt);
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-accent);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: .9rem;
+  transition: background .15s;
+}
+.btn-share:hover { background: #D8D0FD; }
+
+.btn-danger {
+  background: var(--color-danger-lt);
+  color: var(--color-danger);
+  border: 1px solid #FCA5A5;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: .9rem;
+  transition: background .15s;
+}
+.btn-danger:hover { background: #FCA5A5; }
+
+.btn-sm { padding: 7px 14px; font-size: .85rem; }
+
+/* ================================================
+   VISTAS (páginas)
+================================================ */
+.vista {
+  display: none;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+.vista.activa { display: block; }
+
+/* ================================================
+   VISTA: INICIO – HERO
+================================================ */
+.hero {
+  text-align: center;
+  padding: 48px 0 36px;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+.hero-subtitle {
+  margin-top: 12px;
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+}
+
+/* ================================================
+   BUSCADOR
+================================================ */
+.buscador-section { margin-bottom: 28px; }
+.buscador-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.buscador-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 1rem;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+.buscador-input {
+  width: 100%;
+  padding: 12px 44px 12px 42px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: 1rem;
+  color: var(--color-text);
+  transition: border-color .15s, box-shadow .15s;
+  outline: none;
+}
+.buscador-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-lt);
+}
+.buscador-input::placeholder { color: var(--color-text-muted); }
+.buscador-clear {
+  position: absolute;
+  right: 12px;
+  color: var(--color-text-muted);
+  font-size: .85rem;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background .15s;
+  display: none;
+}
+.buscador-clear.visible { display: flex; }
+.buscador-clear:hover { background: var(--color-border); }
+
+/* Filtros por categoría */
+.filtros-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.filtro-btn {
+  padding: 5px 14px;
+  border-radius: 99px;
+  border: 1.5px solid var(--color-border);
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  transition: all .15s;
+}
+.filtro-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.filtro-btn.activo {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* Contador de resultados */
+.contador-resultados {
+  font-size: .82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+
+/* ================================================
+   GRID DE CANCIONES
+================================================ */
+.canciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* Tarjeta de canción */
+.cancion-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-card);
+  transition: transform .15s, box-shadow .15s;
+}
+.cancion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+}
+.card-categoria {
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--color-accent);
+}
+.card-titulo {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+.card-artista {
+  font-size: .88rem;
+  color: var(--color-text-muted);
+}
+.card-tono {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .8rem;
+  font-weight: 600;
+  background: var(--color-accent-lt);
+  color: var(--color-accent);
+  padding: 3px 10px;
+  border-radius: 99px;
+  width: fit-content;
+}
+.card-acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.card-btn-acordes {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  font-weight: 600;
+  transition: background .15s;
+  text-align: center;
+}
+.card-btn-acordes:hover { background: #4840b0; }
+.card-btn-setlist {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  font-weight: 500;
+  transition: background .15s, border-color .15s;
+  text-align: center;
+}
+.card-btn-setlist:hover {
+  background: var(--color-accent-lt);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.card-btn-setlist.en-setlist {
+  background: var(--color-accent-lt);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.card-usuario {
+  font-size: .73rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Estado vacío */
+.estado-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-muted);
+}
+.estado-vacio p { margin-bottom: 16px; font-size: 1rem; }
+
+/* ================================================
+   VISTA: DETALLE DE CANCIÓN
+================================================ */
+.cancion-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+.btn-volver {
+  font-size: .88rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  padding: 6px 0;
+  width: fit-content;
+  transition: color .15s;
+}
+.btn-volver:hover { color: var(--color-text); }
+.cancion-titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+.cancion-artista {
+  color: var(--color-text-muted);
+  font-size: .95rem;
+  margin-top: 2px;
+}
+.cancion-tono-badge, .cancion-cat-badge {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: .78rem;
+  font-weight: 600;
+  margin-right: 6px;
+}
+.cancion-tono-badge {
+  background: var(--color-accent-lt);
+  color: var(--color-accent);
+}
+.cancion-cat-badge {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+.cancion-header-acciones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-agregar-setlist {
+  background: var(--color-accent);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: .9rem;
+  transition: background .15s;
+}
+.btn-agregar-setlist:hover { background: #4840b0; }
+.btn-agregar-setlist.en-setlist {
+  background: var(--color-accent-lt);
+  color: var(--color-accent);
+}
+
+/* Controles de lectura */
+.controles-lectura {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 14px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 28px;
+  align-items: center;
+}
+.control-grupo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.control-label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+.ctrl-btn {
+  padding: 6px 14px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  transition: all .15s;
+  white-space: nowrap;
+}
+.ctrl-btn:hover {
+  background: var(--color-accent-lt);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.ctrl-valor {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  min-width: 28px;
+  text-align: center;
+}
+.scroll-btn.activo {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+/* Contenido de acordes */
+.acordes-contenido {
+  font-size: 1rem;
+  line-height: 2;
+}
+.seccion-label {
+  display: block;
+  font-weight: 700;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--color-accent);
+  margin: 28px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--color-accent-lt);
+}
+.linea-acordes-grupo {
+  display: block;
+  margin-bottom: 8px;
+}
+.linea-acordes {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: .05em;
+  line-height: 1.4;
+  white-space: pre;
+  font-size: .92em;
+}
+.linea-letra {
+  display: block;
+  color: var(--color-text);
+  white-space: pre-wrap;
+}
+
+.aportado-por {
+  margin-top: 48px;
+  font-size: .78rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* ================================================
+   VISTA: SETLIST
+================================================ */
+.setlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+.setlist-titulo {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.setlist-acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.setlist-count {
+  font-size: .88rem;
+  color: var(--color-text-muted);
+}
+
+/* Lista del setlist */
+.setlist-lista { display: flex; flex-direction: column; gap: 10px; }
+.setlist-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-card);
+}
+.setlist-num {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-accent);
+  font-weight: 700;
+  min-width: 28px;
+  text-align: center;
+}
+.setlist-item-info { flex: 1; }
+.setlist-item-titulo {
+  font-weight: 600;
+  font-size: 1rem;
+}
+.setlist-item-sub {
+  font-size: .82rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+.setlist-item-acciones {
+  display: flex;
+  gap: 6px;
+}
+.setlist-btn-ver {
+  padding: 6px 12px;
+  background: var(--color-accent-lt);
+  color: var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-size: .82rem;
+  font-weight: 600;
+  transition: background .15s;
+}
+.setlist-btn-ver:hover { background: #D8D0FD; }
+.setlist-btn-quitar {
+  padding: 6px 12px;
+  background: var(--color-danger-lt);
+  color: var(--color-danger);
+  border-radius: var(--radius-sm);
+  font-size: .82rem;
+  font-weight: 600;
+  transition: background .15s;
+}
+.setlist-btn-quitar:hover { background: #FCA5A5; }
+
+/* Botones mover */
+.setlist-mover-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.setlist-btn-mover {
+  padding: 3px 7px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: .75rem;
+  color: var(--color-text-muted);
+  line-height: 1;
+  transition: background .12s;
+}
+.setlist-btn-mover:hover { background: var(--color-border); }
+
+/* Resumen del setlist */
+.setlist-resumen {
+  margin-top: 36px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+.setlist-resumen h3 {
+  font-size: .85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--color-text-muted);
+  margin-bottom: 14px;
+}
+.resumen-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-bg);
+  font-size: .88rem;
+}
+.resumen-fila:last-child { border-bottom: none; }
+.resumen-num { font-size: .75rem; color: var(--color-text-muted); margin-right: 8px; }
+.resumen-tono {
+  font-weight: 700;
+  font-size: .8rem;
+  color: var(--color-accent);
+  background: var(--color-accent-lt);
+  padding: 2px 9px;
+  border-radius: 99px;
+}
+
+/* ================================================
+   MODAL
+================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 23, .55);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-box {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.modal-header h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.modal-cerrar {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background .15s;
+}
+.modal-cerrar:hover { background: var(--color-bg); }
+.modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.campo label {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.campo-ayuda {
+  font-size: .78rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+.campo-ayuda code {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: .8rem;
+}
+.campo input,
+.campo select,
+.campo textarea {
+  padding: 10px 13px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  resize: vertical;
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-lt);
+  background: var(--color-surface);
+}
+.campo textarea { min-height: 200px; font-size: .9rem; line-height: 1.6; }
+.campo-error {
+  font-size: .82rem;
+  color: var(--color-danger);
+  font-weight: 500;
+  padding: 8px 12px;
+  background: var(--color-danger-lt);
+  border-radius: var(--radius-sm);
+}
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+/* ================================================
+   TOAST
+================================================ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--color-text);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 99px;
+  font-size: .9rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 300;
+}
+.toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ================================================
+   RESPONSIVE – MOBILE
+================================================ */
+@media (max-width: 600px) {
+  .navbar-links .btn-primary.btn-sm {
+    padding: 6px 10px;
+    font-size: .8rem;
+  }
+  .canciones-grid {
+    grid-template-columns: 1fr;
+  }
+  .controles-lectura {
+    gap: 12px;
+  }
+  .setlist-item {
+    flex-wrap: wrap;
+  }
+  .hero { padding: 32px 0 24px; }
+  .modal-box { max-height: 95vh; }
+}
+
+/* ================================================
+   BARRA EN VIVO
+   Fija debajo del navbar. Solo visible en vista canción
+   cuando hay modo en vivo activo.
+================================================ */
+.barra-en-vivo {
+  position: sticky;
+  top: var(--navbar-h);
+  z-index: 90;
+  background: var(--color-text);   /* fondo oscuro para contraste total en escenario */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 12px;
+  height: 56px;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+/* Botones Anterior / Siguiente */
+.env-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-size: .88rem;
+  font-weight: 600;
+  min-width: 100px;
+  justify-content: center;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.env-btn:hover:not(:disabled) { background: rgba(255,255,255,.18); }
+.env-btn:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+.env-flecha { font-size: 1.1rem; line-height: 1; }
+.env-btn-label { font-size: .82rem; }
+
+/* Centro: indicador + nombre */
+.env-centro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  min-width: 0;
+}
+.env-indicador {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--color-accent);
+  /* color de acento sobre fondo oscuro */
+  filter: brightness(1.6);
+  line-height: 1;
+}
+.env-nombre {
+  font-size: .9rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+  margin-top: 2px;
+}
+
+/* Botón "Ver setlist" compacto */
+.env-btn-setlist {
+  background: none;
+  color: rgba(255,255,255,.6);
+  border: none;
+  padding: 8px 10px;
+  font-size: .8rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  margin-left: 8px;
+  white-space: nowrap;
+  transition: color .15s, background .15s;
+}
+.env-btn-setlist:hover {
+  color: #fff;
+  background: rgba(255,255,255,.1);
+}
+
+/* ================================================
+   BARRA DE SECCIONES
+================================================ */
+.barra-secciones {
+  position: sticky;
+  /* Se apila debajo del navbar + barra en vivo */
+  top: calc(var(--navbar-h) + 56px);  /* 60 + 56 = 116 */
+  z-index: 80;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.barra-secciones::-webkit-scrollbar { display: none; }
+
+.seccion-nav-btn {
+  padding: 5px 14px;
+  border-radius: 99px;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: .8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.seccion-nav-btn:hover {
+  background: var(--color-accent-lt);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Cuando la barra en vivo NO está visible, la barra de secciones
+   sube al top del navbar. Se controla por JS añadiendo la clase. */
+.barra-secciones.sin-en-vivo {
+  top: var(--navbar-h);
+}
+
+/* ================================================
+   BOTÓN MODO LETRA
+================================================ */
+.letra-btn.activo {
+  background: #1C1917;
+  border-color: #1C1917;
+  color: #fff;
+}
+
+/* ================================================
+   AJUSTE DE PADDING VISTA CANCIÓN
+   para que el contenido no quede tapado por barras fijas
+================================================ */
+#vista-cancion {
+  /* El padding-top base es 32px desde .vista;
+     las barras fijas son sticky así que no hace falta padding extra,
+     pero añadimos algo de respiro */
+  scroll-padding-top: 180px;
+}
+
+/* ================================================
+   RESPONSIVE MOBILE – BARRA EN VIVO
+================================================ */
+@media (max-width: 600px) {
+  .barra-en-vivo {
+    padding: 0 8px;
+    height: 60px;
+  }
+  .env-btn {
+    min-width: 72px;
+    padding: 10px 10px;
+    font-size: .8rem;
+  }
+  .env-btn-label { display: none; } /* solo flecha en móvil */
+  .env-flecha { font-size: 1.3rem; }
+  .env-nombre { max-width: 140px; font-size: .82rem; }
+  .env-btn-setlist { font-size: .72rem; padding: 8px 6px; }
+  .barra-secciones {
+    top: calc(var(--navbar-h) + 60px);
+  }
+}

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setlist Worship – Corchea House</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ================================================
+       NAVBAR
+  ================================================ -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <button class="logo-btn" onclick="mostrarVista('inicio')">
+        <span class="logo-icon">♩</span>
+        <span class="logo-text">Corchea House</span>
+      </button>
+      <nav class="navbar-links">
+        <button class="nav-link" onclick="mostrarVista('inicio')">Canciones</button>
+        <button class="nav-link" onclick="mostrarVista('setlist')">
+          Mi Setlist
+          <span class="badge" id="badge-setlist">0</span>
+        </button>
+        <button class="btn-primary btn-sm" onclick="abrirFormularioCancion()">+ Subir canción</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================================================
+       BARRA EN VIVO (fija debajo del navbar, visible en vista canción)
+  ================================================ -->
+  <div class="barra-en-vivo" id="barra-en-vivo" style="display:none;">
+    <button class="env-btn env-lateral" id="env-anterior" onclick="navegarEnVivo(-1)" title="Canción anterior (←)">
+      <span class="env-flecha">←</span>
+      <span class="env-btn-label">Anterior</span>
+    </button>
+    <div class="env-centro">
+      <span class="env-indicador" id="env-indicador">1 / 1</span>
+      <span class="env-nombre" id="env-nombre"></span>
+    </div>
+    <button class="env-btn env-lateral" id="env-siguiente" onclick="navegarEnVivo(1)" title="Siguiente canción (→)">
+      <span class="env-btn-label">Siguiente</span>
+      <span class="env-flecha">→</span>
+    </button>
+    <button class="env-btn-setlist" onclick="mostrarVista('setlist')" title="Ver setlist">☰ Setlist</button>
+  </div>
+
+  <!-- ================================================
+       BARRA DE SECCIONES (fija, scroll interno)
+  ================================================ -->
+  <div class="barra-secciones" id="barra-secciones" style="display:none;"></div>
+
+  <!-- ================================================
+       VISTA: INICIO
+  ================================================ -->
+  <main id="vista-inicio" class="vista activa">
+    <section class="hero">
+      <h1 class="hero-title">Setlist Worship</h1>
+      <p class="hero-subtitle">Organiza tus canciones y setlists para cada domingo.</p>
+    </section>
+
+    <section class="buscador-section">
+      <div class="buscador-wrap">
+        <span class="buscador-icon">🔍</span>
+        <input type="text" id="input-buscar" class="buscador-input"
+          placeholder="Buscar por nombre, artista o tonalidad…"
+          oninput="filtrarCanciones()" autocomplete="off" />
+        <button class="buscador-clear" id="btn-limpiar-buscar" onclick="limpiarBusqueda()" aria-label="Limpiar búsqueda">✕</button>
+      </div>
+      <div class="filtros-wrap" id="filtros-categoria">
+        <button class="filtro-btn activo" data-cat="">Todas</button>
+        <button class="filtro-btn" data-cat="Alabanza">Alabanza</button>
+        <button class="filtro-btn" data-cat="Adoración">Adoración</button>
+        <button class="filtro-btn" data-cat="Entrada">Entrada</button>
+        <button class="filtro-btn" data-cat="Ministración">Ministración</button>
+        <button class="filtro-btn" data-cat="Ofertorio">Ofertorio</button>
+      </div>
+    </section>
+
+    <p class="contador-resultados" id="contador-canciones"></p>
+    <section class="canciones-grid" id="lista-canciones"></section>
+    <div class="estado-vacio" id="estado-vacio" style="display:none;">
+      <p>No se encontraron canciones.</p>
+      <button class="btn-primary" onclick="abrirFormularioCancion()">Sube la primera canción</button>
+    </div>
+  </main>
+
+  <!-- ================================================
+       VISTA: DETALLE DE CANCIÓN
+  ================================================ -->
+  <main id="vista-cancion" class="vista">
+
+    <!-- Header de la canción -->
+    <div class="cancion-header">
+      <button class="btn-volver" onclick="mostrarVista('inicio')">← Volver</button>
+      <div class="cancion-header-meta">
+        <h2 class="cancion-titulo" id="detalle-titulo"></h2>
+        <p class="cancion-artista" id="detalle-artista"></p>
+        <span class="cancion-tono-badge" id="detalle-tono"></span>
+        <span class="cancion-cat-badge" id="detalle-categoria"></span>
+      </div>
+      <div class="cancion-header-acciones">
+        <button class="btn-agregar-setlist" id="btn-agregar-detalle" onclick="agregarDesdeDetalle()">
+          + Agregar al setlist
+        </button>
+        <button class="btn-secondary btn-sm" onclick="editarCancionActual()">✏️ Editar</button>
+      </div>
+    </div>
+
+    <!-- Controles de lectura -->
+    <div class="controles-lectura">
+      <div class="control-grupo">
+        <span class="control-label">Tono</span>
+        <button class="ctrl-btn" onclick="cambiarTono(-1)" title="Bajar tono">♭ −</button>
+        <span class="ctrl-valor" id="ctrl-tono-actual"></span>
+        <button class="ctrl-btn" onclick="cambiarTono(1)" title="Subir tono">♯ +</button>
+      </div>
+      <div class="control-grupo">
+        <span class="control-label">Texto</span>
+        <button class="ctrl-btn" onclick="cambiarFuente(-2)">A−</button>
+        <button class="ctrl-btn" onclick="cambiarFuente(2)">A+</button>
+      </div>
+      <div class="control-grupo">
+        <!-- Toggle Solo Letra / Con Acordes -->
+        <button class="ctrl-btn letra-btn" id="btn-solo-letra" onclick="toggleLetra()">🎤 Solo letra</button>
+      </div>
+      <div class="control-grupo">
+        <button class="ctrl-btn scroll-btn" id="btn-autoscroll" onclick="toggleAutoscroll()">⏩ Auto scroll</button>
+      </div>
+    </div>
+
+    <!-- Acordes / letra -->
+    <div class="acordes-contenido" id="acordes-contenido"></div>
+
+    <p class="aportado-por" id="detalle-aportado"></p>
+  </main>
+
+  <!-- ================================================
+       VISTA: SETLIST
+  ================================================ -->
+  <main id="vista-setlist" class="vista">
+    <div class="setlist-header">
+      <h2 class="setlist-titulo">Mi setlist del domingo</h2>
+      <div class="setlist-acciones">
+        <span class="setlist-count" id="setlist-count-texto">0 canciones</span>
+        <button class="btn-share btn-sm" onclick="compartirSetlist()">🔗 Compartir</button>
+        <button class="btn-danger btn-sm" onclick="limpiarSetlist()">🗑 Limpiar</button>
+      </div>
+    </div>
+
+    <ul class="setlist-lista" id="setlist-lista"></ul>
+
+    <div class="estado-vacio" id="setlist-vacio" style="display:none;">
+      <p>Tu setlist está vacío.</p>
+      <button class="btn-primary" onclick="mostrarVista('inicio')">Buscar canciones</button>
+    </div>
+
+    <div class="setlist-resumen" id="setlist-resumen" style="display:none;">
+      <h3>Resumen</h3>
+      <div id="setlist-resumen-contenido"></div>
+    </div>
+  </main>
+
+  <!-- ================================================
+       MODAL: FORMULARIO CANCIÓN
+  ================================================ -->
+  <div class="modal-overlay" id="modal-cancion" style="display:none;" onclick="cerrarModalSiOverlay(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-titulo-texto">Subir canción</h3>
+        <button class="modal-cerrar" onclick="cerrarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="campo">
+          <label for="campo-titulo">Título *</label>
+          <input type="text" id="campo-titulo" placeholder="Nombre de la canción" />
+        </div>
+        <div class="campo">
+          <label for="campo-artista">Artista / Ministerio *</label>
+          <input type="text" id="campo-artista" placeholder="Ej. Hillsong, Marcos Witt…" />
+        </div>
+        <div class="campo">
+          <label for="campo-tono">Tonalidad original *</label>
+          <select id="campo-tono">
+            <option value="">Selecciona</option>
+            <option>C</option><option>C#</option><option>D</option><option>D#</option>
+            <option>E</option><option>F</option><option>F#</option><option>G</option>
+            <option>G#</option><option>A</option><option>A#</option><option>B</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="campo-categoria">Categoría</label>
+          <select id="campo-categoria">
+            <option value="">Sin categoría</option>
+            <option>Alabanza</option><option>Adoración</option><option>Entrada</option>
+            <option>Ministración</option><option>Ofertorio</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="campo-usuario">Tu nombre (opcional)</label>
+          <input type="text" id="campo-usuario" placeholder="Ej. Juan" />
+        </div>
+        <div class="campo">
+          <label for="campo-acordes">Letra con acordes *</label>
+          <p class="campo-ayuda">
+            Escribe los acordes entre corchetes <code>[G]</code> justo antes de la sílaba.<br/>
+            Usa <code>[Verso 1]</code>, <code>[Coro]</code>, <code>[Puente]</code> para secciones.
+          </p>
+          <textarea id="campo-acordes" rows="14"
+            placeholder="[Verso 1]&#10;[G]Señor tú eres [D]bueno&#10;[Em]Fiel es tu [C]amor&#10;&#10;[Coro]&#10;[G]Aleluya [D]aleluya"></textarea>
+        </div>
+        <p class="campo-error" id="modal-error" style="display:none;"></p>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+          <button class="btn-primary" onclick="guardarCancion()">Guardar canción</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
