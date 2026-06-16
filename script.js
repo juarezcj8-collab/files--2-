@@ -9,6 +9,15 @@
 /* ================================================
    DATOS DE EJEMPLO
 ================================================ */
+const SUPABASE_URL = 'https://dxobaucdnugqxtcyjmwz.supabase.co';
+
+const SUPABASE_KEY = 'sb_publishable_Fe3AbUaEzb4n_4XA51LQig_O8QKSQGx';
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
 const CANCIONES_DEFAULT = [
   {
     id: 'cancion-1',
