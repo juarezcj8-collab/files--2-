@@ -250,6 +250,15 @@ async function cargarDatos() {
 
   canciones = data || [];
 }
+function guardarSetlist() {
+  localStorage.setItem('ch_setlist', JSON.stringify(setlist));
+}
+
+function guardarCanciones() {
+  // Temporal: ya no guardaremos canciones locales porque vienen de Supabase.
+  // La dejamos para que el código viejo no truene.
+  console.warn('guardarCanciones() está desactivada porque ahora usamos Supabase.');
+}
 
 /* ================================================
    NAVEGACIÓN ENTRE VISTAS
@@ -521,6 +530,7 @@ function abrirCancion(id, enVivo = false, index = -1) {
 
   actualizarControlTono();
   renderizarAcordes(c.letra, 0);
+  
 renderizarBarraSecciones(c.letra);
 
 mostrarVista('cancion');
@@ -573,30 +583,37 @@ function navegarEnVivo(delta) {
 /* ================================================
    BARRA DE SECCIONES (scroll interno)
 ================================================ */
+function esAcordeToken(texto) {
+  return /^[A-G][b#]?(m|maj|min|sus|add|aug|dim)?\d*(\/[A-G][b#]?)?$/.test(texto.trim());
+}
 function renderizarBarraSecciones(letra) {
   const barra = document.getElementById('barra-secciones');
   if (!barra) return;
 
-  // Extraer etiquetas de sección
   const secciones = [];
-  const regex = /^\[([^\]]+)\]$/gm;
+  const regex = /^\[([^\]]+)\](.*)$/gm;
   let match;
+
   while ((match = regex.exec(letra)) !== null) {
-    const label = match[1];
-    // Excluir si es un acorde puro
-    if (!/^[A-G][b#]?/.test(label)) {
-      secciones.push(label);
+    const label = match[1].trim();
+    const extra = match[2].trim();
+
+    if (!esAcordeToken(label)) {
+      secciones.push(extra ? `${label} ${extra}` : label);
     }
   }
 
-  if (secciones.length <= 1) {
+  console.log('Secciones detectadas:', secciones);
+
+  if (secciones.length === 0) {
     barra.style.display = 'none';
+    barra.innerHTML = '';
     return;
   }
 
   barra.style.display = 'flex';
   barra.innerHTML = secciones.map(s =>
-    `<button class="seccion-nav-btn" onclick="scrollASeccion('${esc(s)}')">${esc(s)}</button>`
+    `<button class="seccion-nav-btn" onclick="scrollASeccion('${s.replace(/'/g, "\\'")}')">${esc(s)}</button>`
   ).join('');
 }
 
@@ -649,12 +666,20 @@ function renderizarAcordes(letra, semitonos) {
     const trimmed = linea.trim();
 
     // Etiqueta de sección
-    if (/^\[(?!.*[A-G][b#]?\d*(?:m|maj|min|sus|add|aug|dim)?)\w[\w\s\-]*\]$/.test(trimmed) && !esLineaDeAcordes(trimmed)) {
-      const label = trimmed.slice(1, -1);
-      html += `<span class="seccion-label" data-seccion="${esc(label)}">${esc(label)}</span>`;
-      seccionIdx++;
-      continue;
-    }
+    const seccionMatch = trimmed.match(/^\[([^\]]+)\](.*)$/);
+
+if (seccionMatch) {
+  const label = seccionMatch[1].trim();
+  const extra = seccionMatch[2].trim();
+
+  const esAcorde = /^[A-G][b#]?(m|maj|min|sus|add|aug|dim|7|9|11|13)?/.test(label);
+
+  if (!esAcorde) {
+    const nombreSeccion = extra ? `${label} ${extra}` : label;
+    html += `<span class="seccion-label" data-seccion="${esc(nombreSeccion)}">${esc(nombreSeccion)}</span>`;
+    continue;
+  }
+}
 
     if (trimmed === '') { html += '<br/>'; continue; }
 
