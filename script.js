@@ -255,9 +255,51 @@ function guardarSetlist() {
 }
 
 function guardarCanciones() {
-  // Temporal: ya no guardaremos canciones locales porque vienen de Supabase.
-  // La dejamos para que el código viejo no truene.
-  console.warn('guardarCanciones() está desactivada porque ahora usamos Supabase.');
+  async function guardarCancion() {
+  const titulo    = document.getElementById('campo-titulo').value.trim();
+  const artista   = document.getElementById('campo-artista').value.trim();
+  const tono      = document.getElementById('campo-tono').value;
+  const categoria = document.getElementById('campo-categoria').value;
+  const usuario   = document.getElementById('campo-usuario').value.trim();
+  const letra     = document.getElementById('campo-acordes').value.trim();
+  const errorEl   = document.getElementById('modal-error');
+
+  if (!titulo || !artista || !tono || !letra) {
+    errorEl.textContent = 'Por favor completa los campos obligatorios (*)';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  errorEl.style.display = 'none';
+
+  const nuevaCancion = {
+    titulo,
+    artista,
+    tono,
+    categoria,
+    usuario,
+    letra,
+    estado: 'aprobado'
+  };
+
+  const { data, error } = await supabaseClient
+    .from('canciones')
+    .insert([nuevaCancion])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error subiendo canción:', error);
+    errorEl.textContent = 'No se pudo subir la canción.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  canciones.unshift(data);
+  cerrarModal();
+  renderizarCanciones();
+  mostrarToast('Canción subida a Corchea ✓');
+  
 }
 
 /* ================================================
@@ -945,4 +987,5 @@ function mostrarToast(mensaje) {
   toast.classList.add('visible');
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => toast.classList.remove('visible'), 2200);
+  }
 }
